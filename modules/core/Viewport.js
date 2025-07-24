@@ -36,10 +36,7 @@ class Viewport extends EventEmitter {
 
         // Specify the coordinate reference system and initialise the renderer
         const leafletConfig = this._makeLeafletConfig( config );
-        leafletConfig.crs = ( {
-            [ CRSOrigin.BottomLeft ]: Leaflet.Ark.BottomLeftPixelCrs,
-            [ CRSOrigin.TopLeft ]: Leaflet.Ark.TopLeftPixelCrs,
-        } )[ this.map.crs.origin ];
+        leafletConfig.crs = this._makeCRS( map );
         leafletConfig.renderer = new Leaflet.Canvas( leafletConfig.rendererSettings );
 
         /**
@@ -267,6 +264,37 @@ class Viewport extends EventEmitter {
         return result;
     }
 
+    /**
+     * @private
+     * @param {DataMap} map
+     * @return {LeafletModule.CRS}
+     */
+    _makeCRS( map ) {
+        let a = 1;
+        let b = 0;
+        let c = map.crs.origin === CRSOrigin.BottomLeft ? -1 : 1;
+        let d = 0;
+        if ( Util.isTilingEnabled ) {
+            let height = Math.abs( map.crs.topLeft[0] - map.crs.bottomRight[0] );
+            let width = Math.abs( map.crs.topLeft[1] - map.crs.bottomRight[1] );
+            while (width > 256 || height > 256) {
+                width /= 2;
+                height /= 2;
+            }
+            const scale = height / 100;
+            a *= scale;
+            c *= scale;
+            const bg = map.backgrounds[map.getCurrentBackgroundIndex()];
+            if ( bg ) {
+                const [ [ yOffset, xOffset ] ] = map.crs.fromBox( bg.bounds );
+                b = -xOffset * scale;
+                d = -yOffset * scale;
+            }
+        }
+        return Leaflet.Util.extend( {}, Leaflet.CRS.Simple, {
+            transformation: new Leaflet.Transformation( a, b, c, d ),
+        } );
+    }
 
     /**
      * @return {LeafletModule.Map}
@@ -302,6 +330,17 @@ class Viewport extends EventEmitter {
             const computedZoom = this._leaflet.getBoundsZoom( this.map.getPaddedContentBounds( false, 0.6 ), false, [ 0, 0 ] );
             this._leaflet.setMinZoom( computedZoom );
             // TODO: this should recalculate popup zoom?
+        }
+        if ( Util.isTilingEnabled ) {
+            // This doesn't really work well, because dynamic CRS isn't
+            // supported: https://github.com/Leaflet/Leaflet/issues/2553.
+            // However, changing the CRS is the only possible way of offsetting
+            // the individual backgrounds, because layer specific projections
+            // are not supported either:
+            // https://github.com/Leaflet/Leaflet/issues/1818
+            // In our case, changing the zoom level triggers reprojection, which
+            // is good enough for our needs.
+            this._leaflet.options.crs = this._makeCRS( this.map );
         }
     }
 

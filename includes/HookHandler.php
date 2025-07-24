@@ -8,6 +8,7 @@ use MediaWiki\Extension\DataMaps\Rendering\MarkerProcessor;
 use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Parser\Parser;
+use MediaWiki\Parser\ParserOptions;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Title\Title;
@@ -208,7 +209,7 @@ final class HookHandler implements
                     $dataMap = $content->asModel();
                     // Prepare a parser
                     $parser = MediaWikiServices::getInstance()->getParser();
-                    $parserOptions = \ParserOptions::newFromAnon();
+                    $parserOptions = ParserOptions::newFromAnon();
                     $parser->setOptions( $parserOptions );
                     $parser->parse( '', $title, $parserOptions, false, true );
                     // Creating a marker model backed by an empty object, as it will later get reassigned to actual data to avoid
@@ -255,6 +256,7 @@ final class HookHandler implements
             'IsBleedingEdge' => $extConfig->hasExperimentalFeatures(),
             'IsVisualEditorEnabled' => $extConfig->isVisualEditorEnabled(),
             'IsMapLazyLoadingEnabled' => $extConfig->isMapLazyLoadingEnabled(),
+            'IsTilingEnabled' => $extConfig->isTilingEnabled(),
             'TabberNeueModule' => 'ext.tabberNeue',
             // TODO: not the brightest way
             'CanAnonsEdit' => array_key_exists( 'edit', $config->get( MainConfigNames::GroupPermissions )[ '*' ] )

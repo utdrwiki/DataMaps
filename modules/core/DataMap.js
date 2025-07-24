@@ -689,6 +689,8 @@ class DataMap extends EventEmitter {
                     this._contentBounds.extend( layerBounds );
                 } else if ( layer.getLatLng ) {
                     this._contentBounds.extend( layer.getLatLng() );
+                } else if ( layer.options.bounds ) {
+                    this._contentBounds.extend( layer.options.bounds );
                 }
             }
         }

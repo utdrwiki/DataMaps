@@ -7,7 +7,8 @@ use ObjectCache;
 use WikiPage;
 
 final class ArticleMapCacheManagingHooks implements
-    \MediaWiki\Page\Hook\ArticlePurgeHook
+    \MediaWiki\Page\Hook\ArticlePurgeHook,
+    \MediaWiki\Hook\LocalFilePurgeThumbnailsHook
 {
     public function __construct(
         private readonly ExtensionConfig $config
@@ -33,5 +34,20 @@ final class ArticleMapCacheManagingHooks implements
         $cache = ObjectCache::getInstance( $this->config->getApiCacheType() );
         $cacheKey = ApiQueryDataMapEndpoint::makeKey( $title, $revision->getId() );
         $cache->delete( $cacheKey );
+    }
+
+    /**
+     * Deleted tiled files for a newly uploaded file if they exist.
+     *
+     * @param $file The file whose thumbnails to purge
+     */
+    public function onLocalFilePurgeThumbnails( $file, $archiveName, $urls ): void {
+        if ( !$this->config->isTilingEnabled() ) {
+            return;
+        }
+        $tiledPath = "{$this->config->getTileDirectory()}/{$file->getRel()}";
+        if ( file_exists( $tiledPath ) ) {
+            wfRecursiveRemoveDir( $tiledPath );
+        }
     }
 }

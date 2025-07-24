@@ -353,6 +353,7 @@
 		"RecentChange_save": "MainHandler",
 		"RevisionDataUpdates": "MainHandler",
 		"ArticlePurge": "ArticleMapCacheManagingHooks",
+		"LocalFilePurgeThumbnails": "ArticleMapCacheManagingHooks",
 		"CodeEditorGetPageLanguage": "ContentModelHooks",
 		"CodeMirrorGetMode": "ContentModelHooks"
 	},
@@ -469,6 +470,18 @@
 		"AllowExperimentalFeatures": {
 			"description": "Whether to enable experimental features.",
 			"value": false
+		},
+		"EnableTiling": {
+			"description": "Whether to enable the experimental tiling feature, that renders maps into tile layers for faster loading.",
+			"value": false
+		},
+		"TileQuality": {
+			"description": "Quality of WebP tiles generated when tiling is enabled.",
+			"value": 90
+		},
+		"TileProcesses": {
+			"description": "Number of parallel processes to use when generating tiles.",
+			"value": 1
 		}
 	},
 

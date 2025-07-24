@@ -4,6 +4,8 @@ namespace MediaWiki\Extension\DataMaps\Rendering\Utils;
 use File;
 use InvalidArgumentException;
 use MediaTransformOutput;
+use MediaWiki\Extension\DataMaps\ExtensionConfig;
+use MediaWiki\Extension\DataMaps\Libraries\GDAL;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Parser\ParserOutput;
 use ThumbnailImage;
@@ -16,6 +18,26 @@ class DataMapFileUtils {
             $title = substr( $title, 5 );
         }
         return trim( $title );
+    }
+
+    public static function getTiledFileUrl( string $title ): string {
+        $file = self::getRequiredFile( $title );
+        $services = MediaWikiServices::getInstance();
+        /** @var ExtensionConfig */
+        $config = $services->getService( ExtensionConfig::SERVICE_NAME );
+        if ( $config->isTilingEnabled() ) {
+            $tiledPath = "{$config->getTileDirectory()}/{$file->getRel()}";
+            if ( !file_exists( $tiledPath ) ) {
+                GDAL::tileImage( $file->getLocalRefPath(), $tiledPath, [
+                    'quality' => $config->getTileQuality(),
+                    'processes' => $config->getTileProcesses(),
+                ] );
+            }
+            $cachebuster = substr( $file->getSha1(), 0, 6 );
+            return "{$config->getTilePath()}/{$file->getUrlRel()}/{z}/{x}/{y}.webp?$cachebuster";
+        } else {
+            return $file->getUrl();
+        }
     }
 
     public static function getFile( string $title ) {

@@ -107,4 +107,19 @@ class ConfigNames {
      * Name constant. For use in ExtensionConfig.
      */
     public const UseCodeMirror = 'DataMapsUseCodeMirror';
+
+    /**
+     * Name constant. For use in ExtensionConfig.
+     */
+    public const EnableTiling = 'DataMapsEnableTiling';
+
+    /**
+     * Name constant. For use in ExtensionConfig.
+     */
+    public const TileQuality = 'DataMapsTileQuality';
+
+    /**
+     * Name constant. For use in ExtensionConfig.
+     */
+    public const TileProcesses = 'DataMapsTileProcesses';
 }
