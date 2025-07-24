@@ -14,18 +14,6 @@ module.exports = Object.assign( {}, Leaflet, {
         /**
          * @since 0.17.11
          */
-        BottomLeftPixelCrs: Leaflet.Util.extend( {}, Leaflet.CRS.Simple, {
-            transformation: new Leaflet.Transformation( 1, 0, -1, 0 )
-        } ),
-        /**
-         * @since 0.17.11
-         */
-        TopLeftPixelCrs: Leaflet.Util.extend( {}, Leaflet.CRS.Simple, {
-            transformation: new Leaflet.Transformation( 1, 0, 1, 0 )
-        } ),
-        /**
-         * @since 0.17.11
-         */
         TileManager: require( './TileManager.js' ),
     }
 } );

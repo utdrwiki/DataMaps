@@ -124,6 +124,14 @@ class Background extends EventEmitter {
      */
     _constructMainLayer() {
         const Leaflet = Util.getLeaflet();
+        if ( Util.isTilingEnabled ) {
+            return new Leaflet.TileLayer(
+                Util.getNonNull( this.image ),
+                {
+                    bounds: this.map.crs.fromBox( this.bounds )
+                }
+            );
+        }
         return new Leaflet.ImageOverlay(
             Util.getNonNull( this.image ),
             this.map.crs.fromBox( this.bounds ),

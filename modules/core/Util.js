@@ -59,6 +59,14 @@ module.exports = Object.freeze( {
     isMapLazyLoadingEnabled: serverSettings.IsMapLazyLoadingEnabled,
 
     /**
+     * Whether tiled image backgrounds are enabled.
+     *
+     * @constant
+     * @type {boolean}
+     */
+    isTilingEnabled: serverSettings.IsTilingEnabled,
+
+    /**
      * Throws an exception if the value is null or undefined. Returns it back otherwise. This exists primarily to satisfy
      * TypeScript's type checking.
      *

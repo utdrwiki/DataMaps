@@ -164,7 +164,7 @@ class EmbedConfigGenerator {
     private function getBackgroundConfig( MapBackgroundSpec $spec, int $coordOrder ): array {
         $out = [];
         if ( !$spec->hasTiles() ) {
-            $out['image'] = DataMapFileUtils::getRequiredFile( $spec->getImageName() )->getURL();
+            $out['image'] = DataMapFileUtils::getTiledFileUrl( $spec->getImageName() );
         }
         $name = $spec->getName();
         if ( $name ) {

@@ -13,6 +13,8 @@ class ExtensionConfig {
     public const CONSTRUCTOR_OPTIONS = [
         // MW
         MainConfigNames::ExtensionAssetsPath,
+        MainConfigNames::UploadDirectory,
+        MainConfigNames::UploadPath,
         // DataMaps
         ConfigNames::NamespaceId,
         ConfigNames::ApiCacheSettings,
@@ -32,6 +34,9 @@ class ExtensionConfig {
         ConfigNames::EnableLoadMapButton,
         ConfigNames::UseCodeEditor,
         ConfigNames::UseCodeMirror,
+        ConfigNames::EnableTiling,
+        ConfigNames::TileQuality,
+        ConfigNames::TileProcesses,
     ];
 
     public function __construct(
@@ -147,5 +152,27 @@ class ExtensionConfig {
 
     public function shouldUseCodeMirror(): bool {
         return !$this->shouldUseCodeEditor() && $this->options->get( ConfigNames::UseCodeMirror );
+    }
+
+    public function isTilingEnabled(): bool {
+        return $this->options->get( ConfigNames::EnableTiling );
+    }
+
+    public function getTileQuality(): int {
+        return $this->options->get( ConfigNames::TileQuality );
+    }
+
+    public function getTileProcesses(): int {
+        return $this->options->get( ConfigNames::TileProcesses );
+    }
+
+    public function getTilePath(): string {
+        $uploadPath = $this->options->get( MainConfigNames::UploadPath );
+        return "$uploadPath/tiles";
+    }
+
+    public function getTileDirectory(): string {
+        $uploadDirectory = $this->options->get( MainConfigNames::UploadDirectory );
+        return "$uploadDirectory/tiles";
     }
 }
