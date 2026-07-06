@@ -295,7 +295,7 @@ class DataMap extends EventEmitter {
         }
 
         // If in a tabber, check if the hash location matches
-        if ( tabberId && tabberId !== window.location.hash.slice( 1 ) ) {
+        if ( tabberId && tabberId !== window.location.hash.slice( 1 ) && !Util.TabberNeue.inFirstTab( this.rootElement ) ) {
             return;
         }
 
